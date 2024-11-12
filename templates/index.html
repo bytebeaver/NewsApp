@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Summarizer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        const synth = window.speechSynthesis;
+
+        function tts(e) {
+            const text = e.target.getAttribute('data-text');
+            const utterThis = new SpeechSynthesisUtterance(text);
+            synth.speak(utterThis);
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>News Summarizer</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('category_page', category='general') }}">General</a></li>
+                <li><a href="{{ url_for('category_page', category='technology') }}">Technology</a></li>
+                <li><a href="{{ url_for('category_page', category='sports') }}">Sports</a></li>
+                <li><a href="{{ url_for('category_page', category='health') }}">Health</a></li>
+                <li><a href="{{ url_for('category_page', category='science') }}">Science</a></li>
+                <li><a href="{{ url_for('category_page', category='business') }}">Business</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="articles-container">
+        {% for article in articles %}
+        <article class="news-article">
+            <h2>{{ article.title }}</h2>
+            <img src="{{ article.image_url }}" alt="Article Image" class="article-image">
+            <button onClick="tts()" data-text="{{ article.summary }}">
+                Play Audio
+            </button>
+            <br />
+            <p>{{ article.summary }}</p>
+            <a href="{{ article.url }}" target="_blank" class="read-more">Read Full Article</a>
+        </article>
+        {% endfor %}
+    </section>
+
+    <div class="load-more-container">
+        <button id="load-more" onclick="loadMoreArticles('{{ category|lower }}', 2)">Load More Articles</button>
+    </div>
+
+    <script>
+        let page = 2;
+        function loadMoreArticles(category, pageNum) {
+            fetch(`/load_more/${category}/${pageNum}`)
+                .then(response => response.json())
+                .then(data => {
+                    const articlesContainer = document.getElementById('articles-container');
+                    data.articles.forEach(article => {
+                        const articleEl = document.createElement('article');
+                        articleEl.classList.add('news-article');
+                        articleEl.innerHTML = `
+                            <h2>${article.title}</h2>
+                            <img src="${article.image_url}" alt="Article Image" class="article-image">
+                            <p>${article.summary}</p>
+                            <a href="${article.url}" target="_blank" class="read-more">Read Full Article</a>
+                        `;
+                        articlesContainer.appendChild(articleEl);
+                    });
+                    page++;
+                });
+        }
+    </script>
+</body>
+</html>
