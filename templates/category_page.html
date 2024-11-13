@@ -57,6 +57,9 @@
                                 <div class="article">
                                     <h2>${article.title}</h2>
                                     ${article.image_url ? `<img src="${article.image_url}" alt="Article Image">` : ''}
+                                    <button onClick="tts(event)" data-text="{{ article.summary }}">
+                                        Play Audio
+                                    </button>
                                     <p>${article.summary}</p>
                                     <a href="${article.url}" target="_blank">Read more</a>
                                 </div>

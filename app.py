@@ -17,7 +17,7 @@ pipe = pipeline("summarization", model="facebook/bart-large-cnn")
 api_key = os.getenv("API_KEY")  
 # Function to fetch articles from NewsAPI by category
 def fetch_articles(api_key, category="general", page=1):
-    url = f"https://newsapi.org/v2/top-headlines?category={category}&apiKey={api_key}&pageSize=10&page={page}"
+    url = f"https://newsapi.org/v2/top-headlines?category={category}&apiKey={api_key}&pageSize=20&page={page}"
     response = requests.get(url)
     articles = response.json().get("articles", [])
     return articles
@@ -67,9 +67,7 @@ def summarize_article(article_url):
         print(summary_result)
         summary = " ".join([s["summary_text"] for s in summary_result])
         
-        # Ensure the summary ends meaningfully
-        if not summary.endswith('.'):
-            summary += '.'
+       
 
         return summary
 
@@ -86,7 +84,7 @@ def category_page(category="general"):
     for article in articles:
         article_url = article['url']
         if article_url in urls_seen:
-            continue  # Skip repeated articles
+            continue  # Skipping the  repeated articles
         image_url = article.get('urlToImage')
         try:
             summary = summarize_article(article_url)
@@ -101,7 +99,7 @@ def category_page(category="general"):
         except Exception as e:
             print(f"Error summarizing article: {e}")
 
-    # Render articles for the selected category
+    
     return render_template('category_page.html', articles=summaries, category=category.capitalize())
 
 # Route for the homepage, defaulting to the "general" category
@@ -109,7 +107,7 @@ def category_page(category="general"):
 def index():
     return category_page("general")
 
-# Endpoint for dynamically loading more articles (for AJAX calls)
+
 @app.route('/load_more/<category>/<int:page>', methods=['GET'])
 def load_more_articles(category="general", page=1):
     articles = fetch_articles(api_key, category, page)
