@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferences</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Set Preferences</h1>
+        <form method="POST" action="{{ url_for('preferences') }}">
+            <label for="categories">Select Categories:</label>
+            <select id="categories" name="categories" multiple>
+                <option value="general">General</option>
+                <option value="business">Business</option>
+                <option value="technology">Technology</option>
+                <option value="sports">Sports</option>
+                <option value="health">Health</option>
+                <option value="entertainment">Entertainment</option>
+            </select>
+            <label for="country">Country Code (e.g., US, IN):</label>
+            <input type="text" id="country" name="country" maxlength="2">
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city">
+            <button type="submit">Save Preferences</button>
+        </form>
+    </div>
+</body>
+</html>

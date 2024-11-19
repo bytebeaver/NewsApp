@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Search Results for "{{ query }}"</h1>
+        <div id="articles">
+            {% if articles %}
+                {% for article in articles %}
+                    <div class="article">
+                        <h2>{{ article.title }}</h2>
+                        {% if article.image_url %}
+                            <img src="{{ article.image_url }}" alt="Article Image">
+                        {% endif %}
+                        <button onClick="tts(event)" data-text="{{ article.summary }}">Play Audio</button>
+                        <p>{{ article.summary }}</p>
+                        <a href="{{ article.url }}" target="_blank">Read more</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No articles found for your query.</p>
+            {% endif %}
+        </div>
+        <a href="{{ url_for('index') }}" class="button">Back to Home</a>
+    </div>
+</body>
+</html>

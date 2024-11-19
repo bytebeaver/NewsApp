@@ -21,6 +21,13 @@
     <div class="container">
         <h1>{{ category }} News</h1>
         <div class="category-buttons">
+            <form id="search-bar" action="{{ url_for('search') }}" method="get">
+                <input id="search-input" type="text" name="q" placeholder="Search..." />
+                <button href="{{ url_for('search') }}" id="search-button">🔎</button>
+            </form>
+            <a href="{{ url_for('preferences') }}" class="button">Preferences</a>
+        </div>
+        <div class="category-buttons">
             <a href="{{ url_for('category_page', category='general') }}" class="button">General</a>
             <a href="{{ url_for('category_page', category='business') }}" class="button">Business</a>
             <a href="{{ url_for('category_page', category='technology') }}" class="button">Technology</a>
@@ -42,14 +49,17 @@
             </div>
             {% endfor %}
         </div>
+        <span id="loader" class="loader"></span>
         <button id="loadMore" data-category="{{ category }}" data-page="2">Load More</button>
     </div>
 
     <script>
         $(document).ready(function() {
+            $("#loader").hide();
             $('#loadMore').click(function() {
                 const category = $(this).data('category');
                 const page = $(this).data('page');
+                $("#loader").show();
                 $.get(`/load_more/${category}/${page}`, function(data) {
                     if (data.articles && data.articles.length > 0) {
                         data.articles.forEach(article => {
@@ -57,7 +67,7 @@
                                 <div class="article">
                                     <h2>${article.title}</h2>
                                     ${article.image_url ? `<img src="${article.image_url}" alt="Article Image">` : ''}
-                                    <button onClick="tts(event)" data-text="{{ article.summary }}">
+                                    <button onClick="tts(event)" data-text="${article.summary}">
                                         Play Audio
                                     </button>
                                     <p>${article.summary}</p>
@@ -66,6 +76,7 @@
                             `);
                         });
                         $('#loadMore').data('page', page + 1);
+                        $("#loader").hide();
                     } else {
                         $('#loadMore').hide();
                     }
