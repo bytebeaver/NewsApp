@@ -229,15 +229,15 @@ def summarize_article(article_url):
         article.parse()
         article_text = article.text
 
-        # not summarizing small articles 
+       
         if len(article_text.split()) < 100:
-            return None  # Skip if article is too short
+            return None  
         print(f"Article length: {len(article_text.split())}")
 
-        # Use article title as context when chunking
+        
         chunks = chunk_text_with_context(article_text, article.title, 1000)
 
-        # 60 word summary
+        
         summary_result = pipe(chunks, max_length=80, min_length=60)
         print(summary_result)
         summary = " ".join([s["summary_text"] for s in summary_result])
@@ -274,7 +274,7 @@ def fetch_articles(api_key, category="general", page=1, country=None, q=None):
     print(response.json())
     return response.json().get("articles", [])
 
-# Authentication routes
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
